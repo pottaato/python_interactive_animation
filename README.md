@@ -7,3 +7,7 @@
   * Road filled with cars `p1_utilities.make_cars` and will **keep moving** to the right. `keep respawning on left then go right`
   * Creature is tagged "hotairballoon", move up `y=-2`, and can be spawned everywhere with single click
   * Two click on the Creature will make the Creature disappear 
+
+## TODO:
+  * Make car endlessly appear on the "Road" from left to right
+  * Make cloud move in the "Sky", make cloud bounces off the canvas
