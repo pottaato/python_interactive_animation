@@ -108,36 +108,39 @@ for i in range(5):
     )
     # print(f"car_{i}")
 
+for j in range(10):
+    p1_utilities.make_cloud(
+        the_canvas, 
+        (random.randint(0, 799), random.randint(0, 300)), 
+        fill_color="white", 
+        my_tag=f"cloud_{j}")
+
 # sample code to make a creature:
 for _ in range(5):
-    # make_creature(
-    #     the_canvas,
-    #     (random.randint(0, 799), random.randint(0, 599)),
-    #     p1_utilities.random_color(),
-    #     p1_utilities.random_color(),
-    #     random.randint(30, 180),
-    #     "creature"
-    # )
     make_creature(
         the_canvas, 
         (random.randint(0, 799), random.randint(0, 300)), 
         p1_utilities.random_color(), "orange", 
         100, 
         "hotairballoon")
+        
 ####################################################################################
 
 ## ANIMATION LOOP HERE ####################################################
 # Note, you will only have ONE animation loop
 
 car_speed_values = [random.randint(2, 10) for _ in range(5)]
+cloud_speed_val = [random.randint(-1, 1) for _ in range(10)]
 
 while True:
     try:
-        p1_utilities.update_position(the_canvas, "hotairballoon", x=0, y=-2)
+        p1_utilities.update_position(the_canvas, "hotairballoon", x = 0, y = -2)
         for i in range(5):
-            p1_utilities.update_position(the_canvas, f"car_{i}", x=car_speed_values[i])
+            p1_utilities.update_position(the_canvas, f"car_{i}", x = car_speed_values[i])
         # print("top:", p1_utilities.get_top(the_canvas, "test"))
         # print("bottom:", p1_utilities.get_top(the_canvas, "test"))
+        for j in range(10):
+            p1_utilities.update_position(the_canvas, f"cloud_{j}", x = cloud_speed_val[j])
         gui.update()
         time.sleep(1 / 60.0)
     except Exception as e:
