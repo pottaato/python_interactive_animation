@@ -11,3 +11,5 @@
 ## TODO:
   * Make car endlessly appear on the "Road" from left to right
   * Make cloud move in the "Sky", make cloud bounces off the canvas
+  * Fix the "doubleclick-to-delete" mechanic
+  * Make creature change color
