@@ -141,6 +141,7 @@ while True:
         # print("bottom:", p1_utilities.get_top(the_canvas, "test"))
         for j in range(10):
             p1_utilities.update_position(the_canvas, f"cloud_{j}", x = cloud_speed_val[j])
+            
         gui.update()
         time.sleep(1 / 60.0)
     except Exception as e:
