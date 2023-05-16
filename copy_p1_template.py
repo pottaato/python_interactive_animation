@@ -2,6 +2,8 @@ from tkinter import Canvas, Tk, Event
 import p1_utilities
 import random
 import time
+import typing
+import traceback
 gui = Tk()
 gui.title('My Terrarium')
 
@@ -59,12 +61,34 @@ def make_landscape_object(a_canvas, center, size=100, my_tag="", primary_color='
 
 ####################################################################################
 
+
+def __my_delete(canvas: Canvas, tag: typing.Union[str, None]):
+    if tag is None:
+        return
+
+    if p1_utilities.does_tag_exist(canvas, tag):
+        p1_utilities.delete(canvas, tag)
+
+def __my_get_right(canvas: Canvas, tag: typing.Union[str, None]):
+    if tag is None:
+        return
+
+    if p1_utilities.does_tag_exist(canvas, tag):
+        p1_utilities.get_right(canvas, tag)
+
+def __my_get_left(canvas: Canvas, tag: typing.Union[str, None]):
+    if tag is None:
+        return
+
+    if p1_utilities.does_tag_exist(canvas, tag):
+        p1_utilities.get_left(canvas, tag)
+
 ## EVENT HANDLERS HERE ##############################################################
 
-counter = 0
+hotairballoon_counter = 5
 def click_handle(event: Event):
     # print(event.x, event.y)
-    global counter
+    global hotairballoon_counter
     # new_tag = "hotairballoon_" + str(counter)
     # p1_utilities.make_cloud(
     #     the_canvas, (event.x,event.y), fill_color="white", my_tag=new_tag)
@@ -74,14 +98,15 @@ def click_handle(event: Event):
         p1_utilities.random_color(), 
         "orange", 
         100, 
-        "hotairballoon"
+        f"hotairballoon_{hotairballoon_counter}"
     )
-    counter = counter + 1
+    print(f"hotairballoon_{hotairballoon_counter}")
+    hotairballoon_counter += 1
 
 def double_click_handle(event):
     print(event)
-    print(p1_utilities.get_tag_from_event(the_canvas, event))
-    p1_utilities.delete(the_canvas, p1_utilities.get_tag_from_event(the_canvas, event))
+    tag = p1_utilities.get_tag_from_event(the_canvas, event)
+    __my_delete(the_canvas, tag)
 
 the_canvas.bind('<Button-1>', click_handle)
 the_canvas.bind('<Button-2>', double_click_handle)
@@ -108,44 +133,63 @@ for i in range(5):
     )
     # print(f"car_{i}")
 
-for j in range(10):
+for i in range(10):
     p1_utilities.make_cloud(
         the_canvas, 
-        (random.randint(0, 799), random.randint(0, 300)), 
+        (random.randint(100, 900), random.randint(0, 300)), 
         fill_color="white", 
-        my_tag=f"cloud_{j}")
+        my_tag=f"cloud_{i}")
 
 # sample code to make a creature:
-for _ in range(5):
+for i in range(5):
     make_creature(
         the_canvas, 
         (random.randint(0, 799), random.randint(0, 300)), 
         p1_utilities.random_color(), "orange", 
         100, 
-        "hotairballoon")
-        
+        f"hotairballoon_{i}")
+
+
 ####################################################################################
 
 ## ANIMATION LOOP HERE ####################################################
 # Note, you will only have ONE animation loop
 
 car_speed_values = [random.randint(2, 10) for _ in range(5)]
-cloud_speed_val = [random.randint(-1, 1) for _ in range(10)]
+cloud_speed_val = [random.randint(1, 3) for _ in range(10)]
+
+cloud_directions = list()
+for _ in range(10):
+    if random.random() >= 0.5:
+        cloud_directions.append(1)
+    else:
+        cloud_directions.append(-1)
 
 while True:
     try:
-        p1_utilities.update_position(the_canvas, "hotairballoon", x = 0, y = -2)
+        for i in range(hotairballoon_counter):
+            tmp_tag = f"hotairballoon_{i}"
+            if not p1_utilities.does_tag_exist(the_canvas, tmp_tag):
+                continue
+            p1_utilities.update_position(the_canvas, tmp_tag, x=0, y=-2)
         for i in range(5):
-            p1_utilities.update_position(the_canvas, f"car_{i}", x = car_speed_values[i])
-        # print("top:", p1_utilities.get_top(the_canvas, "test"))
-        # print("bottom:", p1_utilities.get_top(the_canvas, "test"))
-        for j in range(10):
-            p1_utilities.update_position(the_canvas, f"cloud_{j}", x = cloud_speed_val[j])
-            
+            p1_utilities.update_position(the_canvas, f"car_{i}", x=car_speed_values[i])
+        for i in range(10):
+            tmp_tag = f"cloud_{i}"
+            p1_utilities.update_position(the_canvas, tmp_tag, x=(cloud_speed_val[i] * cloud_directions[i]))
+            try:
+                curr_cloud_right = __my_get_right(the_canvas, tmp_tag)
+                curr_cloud_left = __my_get_left(the_canvas, tmp_tag)
+                if curr_cloud_right >= 1000 or curr_cloud_left <= 0:
+                    p1_utilities.flip(the_canvas, tmp_tag)
+                    cloud_directions[i] = -cloud_directions[i]
+            except TypeError as e:
+                pass
+
         gui.update()
         time.sleep(1 / 60.0)
     except Exception as e:
-        # print(repr(e))
+        print(traceback.format_exc())
         exit(0)
 
 
