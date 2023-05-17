@@ -1,15 +1,16 @@
-from tkinter import Canvas, Tk, Event
-import p1_utilities
 import random
 import time
+from tkinter import Canvas, Event, Tk
+
+import p1_utilities
 
 gui = Tk()
-gui.title('My Terrarium')
+gui.title("My Terrarium")
 
 # initialize canvas:
 window_width = gui.winfo_screenwidth()
 window_height = gui.winfo_screenheight()
-the_canvas = Canvas(gui, width=1000, height=800, background='skyblue')
+the_canvas = Canvas(gui, width=1000, height=800, background="skyblue")
 the_canvas.pack()
 
 ########################## YOUR CODE BELOW THIS LINE ##############################
@@ -17,16 +18,39 @@ the_canvas.pack()
 ### MAKE CREATURE SECTION (put your function defs here ) ##########################
 
 # hotairbaloon
-def make_creature(a_canvas, center, primary_color="red", secondary_color="blue", size=100, my_tag=""):
+def make_creature(
+    a_canvas, center, primary_color="red", secondary_color="blue", size=100, my_tag=""
+):
     r = size / 2
     x = center[0]
     y = center[1]
 
     p1_utilities.make_circle(a_canvas, center, r, fill_color=primary_color, tag=my_tag)
-    p1_utilities.make_line(a_canvas, [(x - r + 5, y + 15), (x + r - 5, y + 15)], curvy=False, fill_color="black", tag=my_tag) 
-    p1_utilities.make_line(a_canvas, [(x - r + 5, y + 15), (x - r + 10, y + 2*r)], curvy=False, fill_color="black", tag=my_tag)
-    p1_utilities.make_line(a_canvas, [(x + r - 5, y + 15), (x + r - 10, y + 2*r)], curvy=False, fill_color="black", tag=my_tag)
-    p1_utilities.make_rectangle(a_canvas, (x - r + 10, y + 2*r), 80, r, fill_color=secondary_color, tag=my_tag)
+    p1_utilities.make_line(
+        a_canvas,
+        [(x - r + 5, y + 15), (x + r - 5, y + 15)],
+        curvy=False,
+        fill_color="black",
+        tag=my_tag,
+    )
+    p1_utilities.make_line(
+        a_canvas,
+        [(x - r + 5, y + 15), (x - r + 10, y + 2 * r)],
+        curvy=False,
+        fill_color="black",
+        tag=my_tag,
+    )
+    p1_utilities.make_line(
+        a_canvas,
+        [(x + r - 5, y + 15), (x + r - 10, y + 2 * r)],
+        curvy=False,
+        fill_color="black",
+        tag=my_tag,
+    )
+    p1_utilities.make_rectangle(
+        a_canvas, (x - r + 10, y + 2 * r), 80, r, fill_color=secondary_color, tag=my_tag
+    )
+
 
 ####################################################################################
 
@@ -36,11 +60,14 @@ def make_creature(a_canvas, center, primary_color="red", secondary_color="blue",
 # to copy those function definitions twice!
 
 # car
-def make_landscape_object(a_canvas, center, size=100, my_tag="", primary_color='blue'):
+def make_landscape_object(a_canvas, center, size=100, my_tag="", primary_color="blue"):
     p1_utilities.make_car(a_canvas, center, fill_color=primary_color, my_tag=my_tag)
 
-def make_sun(a_canvas, center, size=100, my_tag="", primary_color='yellow'):
-    p1_utilities.make_poly_circle(a_canvas, center, size, fill_color="yellow", tag=my_tag)
+
+def make_sun(a_canvas, center, size=100, my_tag="", primary_color="yellow"):
+    p1_utilities.make_poly_circle(
+        a_canvas, center, size, fill_color="yellow", tag=my_tag
+    )
 
 
 ####################################################################################
@@ -70,6 +97,8 @@ def make_sun(a_canvas, center, size=100, my_tag="", primary_color='yellow'):
 ## EVENT HANDLERS HERE ##############################################################
 
 hotairballoon_counter = 5
+
+
 def click_handle(event: Event):
     # print(event.x, event.y)
     global hotairballoon_counter
@@ -77,12 +106,12 @@ def click_handle(event: Event):
     # p1_utilities.make_cloud(
     #     the_canvas, (event.x,event.y), fill_color="white", my_tag=new_tag)
     make_creature(
-        the_canvas, 
-        (event.x, event.y), 
-        p1_utilities.random_color(), 
-        "orange", 
-        100, 
-        f"hotairballoon_{hotairballoon_counter}"
+        the_canvas,
+        (event.x, event.y),
+        p1_utilities.random_color(),
+        "orange",
+        100,
+        f"hotairballoon_{hotairballoon_counter}",
     )
     # print(f"hotairballoon_{hotairballoon_counter}")
     hotairballoon_counter += 1
@@ -95,7 +124,7 @@ def click_handle(event: Event):
 #     tag = p1_utilities.get_tag_from_event(the_canvas, event)
 #     __my_delete(the_canvas, tag)
 
-the_canvas.bind('<Button-1>', click_handle)
+the_canvas.bind("<Button-1>", click_handle)
 
 # the_canvas.bind('<Button-2>', double_click_handle)
 
@@ -107,12 +136,7 @@ the_canvas.bind('<Button-1>', click_handle)
 make_sun(the_canvas, (100, 100), 100, "sun")
 
 # road
-p1_utilities.make_rectangle(
-    the_canvas,
-    (0, 500),
-    1100,
-    350,
-    "gray")
+p1_utilities.make_rectangle(the_canvas, (0, 500), 1100, 350, "gray")
 
 # generate 5 cars
 for i in range(5):
@@ -128,21 +152,24 @@ for i in range(5):
 # generate 10 clouds
 for i in range(10):
     p1_utilities.make_cloud(
-        the_canvas, 
-        (random.randint(100, 900), random.randint(0, 300)), 
-        fill_color="white", 
-        my_tag=f"cloud_{i}")
+        the_canvas,
+        (random.randint(100, 900), random.randint(0, 300)),
+        fill_color="white",
+        my_tag=f"cloud_{i}",
+    )
 
 # sample code to make a creature:
 
 # generate 5 hotairballoons
 for i in range(5):
     make_creature(
-        the_canvas, 
-        (random.randint(0, 799), random.randint(0, 300)), 
-        p1_utilities.random_color(), "orange", 
-        100, 
-        f"hotairballoon_{i}")
+        the_canvas,
+        (random.randint(0, 799), random.randint(0, 300)),
+        p1_utilities.random_color(),
+        "orange",
+        100,
+        f"hotairballoon_{i}",
+    )
 
 
 ####################################################################################
@@ -168,8 +195,8 @@ while True:
         # if not p1_utilities.does_tag_exist(the_canvas, tmp_tag):
         #     continue
         p1_utilities.update_position(the_canvas, tmp_tag, x=0, y=-2)
-        p1_utilities.update_fill(the_canvas, tmp_tag, p1_utilities.random_color())
-    
+        # p1_utilities.update_fill(the_canvas, tmp_tag, p1_utilities.random_color())
+
     # make every car move different speed
     for i in range(5):
         p1_utilities.update_position(the_canvas, f"car_{i}", x=car_speed_values[i])
@@ -177,7 +204,9 @@ while True:
     # make cloud move different speed and direction, bounce when hit edge of canvas
     for i in range(10):
         tmp_tag = f"cloud_{i}"
-        p1_utilities.update_position(the_canvas, tmp_tag, x=cloud_speed_val[i] * cloud_directions[i])
+        p1_utilities.update_position(
+            the_canvas, tmp_tag, x=cloud_speed_val[i] * cloud_directions[i]
+        )
         cloud_right = p1_utilities.get_right(the_canvas, tmp_tag)
         cloud_left = p1_utilities.get_left(the_canvas, tmp_tag)
 
@@ -186,9 +215,8 @@ while True:
             p1_utilities.flip(the_canvas, tmp_tag)
             cloud_directions[i] = -cloud_directions[i]
 
-
-        gui.update()
-        time.sleep(1 / 60.0)
+    gui.update()
+    time.sleep(1 / 60.0)
 
 ########################## YOUR CODE ABOVE THIS LINE ##############################
 
