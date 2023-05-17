@@ -109,11 +109,6 @@ def __my_delete(canvas: Canvas, tag: str):
 
 
 def click_handle(event: Event):
-    # print(event.x, event.y)
-    global hotairballoon_counter
-    # new_tag = "hotairballoon_" + str(counter)
-    # p1_utilities.make_cloud(
-    #     the_canvas, (event.x,event.y), fill_color="white", my_tag=new_tag)
     tag = random_tag("hotairballoon")
     make_creature(
         the_canvas,
