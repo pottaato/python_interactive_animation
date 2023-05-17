@@ -16,3 +16,5 @@
   5. Make delete function that removes "hotairballoon" (by double-click)
   6. Make cars keep appearing from left
   7. [DONE] Make any objects constantly change color
+
+Source: https://bain-cs110.github.io/assignments/p1#starter-files 
