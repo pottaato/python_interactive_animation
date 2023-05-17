@@ -224,7 +224,10 @@ while True:
                     * math.sin(hotairballoon_angle_mapping[tmp_tag])
                 ),
             )
-            # p1_utilities.update_fill(the_canvas, tmp_tag, p1_utilities.random_color())
+            if random.random() < (2 / FPS):
+                p1_utilities.update_fill(
+                    the_canvas, tmp_tag, p1_utilities.random_color()
+                )
 
         # make every car move different speed
         for tag in car_tagset:
