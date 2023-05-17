@@ -1,5 +1,7 @@
 # interactive_animation
 
+![demo](https://github.com/pottaato/interactive_animation/blob/main/gif/demo.gif)
+
 ## General_guidance:
   * Canvas is separated into 2 parts: sky (blue), and road (gray)
   `Note: Road part is made by p1_utilities.make_rectangle (refer to ## Initial Terarium Setup Here ##)`
