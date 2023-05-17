@@ -39,6 +39,10 @@ def make_creature(a_canvas, center, primary_color="red", secondary_color="blue",
 def make_landscape_object(a_canvas, center, size=100, my_tag="", primary_color='blue'):
     p1_utilities.make_car(a_canvas, center, fill_color=primary_color, my_tag=my_tag)
 
+def make_sun(a_canvas, center, size=100, my_tag="", primary_color='yellow'):
+    p1_utilities.make_poly_circle(a_canvas, center, size, fill_color="yellow", tag=my_tag)
+
+
 ####################################################################################
 
 
@@ -100,6 +104,8 @@ the_canvas.bind('<Button-1>', click_handle)
 
 ## Initial Terarium Setup Here ####################################################
 
+make_sun(the_canvas, (100, 100), 100, "sun")
+
 # road
 p1_utilities.make_rectangle(
     the_canvas,
@@ -156,12 +162,13 @@ for _ in range(10):
 
 while True:
 
-    # make every generated hotairballoon "fly up"
+    # make every generated hotairballoon "fly up" and change color
     for i in range(hotairballoon_counter):
         tmp_tag = f"hotairballoon_{i}"
         # if not p1_utilities.does_tag_exist(the_canvas, tmp_tag):
         #     continue
         p1_utilities.update_position(the_canvas, tmp_tag, x=0, y=-2)
+        p1_utilities.update_fill(the_canvas, tmp_tag, p1_utilities.random_color())
     
     # make every car move different speed
     for i in range(5):
@@ -174,7 +181,7 @@ while True:
         cloud_right = p1_utilities.get_right(the_canvas, tmp_tag)
         cloud_left = p1_utilities.get_left(the_canvas, tmp_tag)
 
-        print(cloud_right, cloud_left)
+        # print(cloud_right, cloud_left)
         if cloud_right >= 1000 or cloud_left <= 0:
             p1_utilities.flip(the_canvas, tmp_tag)
             cloud_directions[i] = -cloud_directions[i]
