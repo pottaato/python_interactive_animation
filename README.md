@@ -17,9 +17,9 @@
      1. 3 	3 points 	Spawn a new creature or landscape object when the user either clicks or drags or right-clicks the screen (you can also use a keyboard event).
   4. [DONE] Make each cars and clouds move with different speed, hotairballoon diff speed & angle
      1. 4 	3 points 	Animate each of your creatures (all of your original 5) so that their movement is different (different speeds AND different movement patterns).
-  5. Make delete function that removes "hotairballoon" (by double-click)
+  5. [DONE] Make delete function that removes "hotairballoon" (by double-click)
      1. 7 	3 points 	When you click a creature, remove it from the screen (you can also assign a particular keyboard key to delete a creature (but it needs to be able to be hit more than once without causing an error))
-  6. Make cars keep appearing from left
+  6. [DONE] Make cars keep appearing from left
      1. 6 	3 points 	Periodically (repeatedly) add or remove creatures and/or landscape objects to/from your scene.
   7. [DONE] Make any objects constantly change color
      1. 11 	3 points 	Make your creature or landscape feature periodically (repeatedly) change colors.

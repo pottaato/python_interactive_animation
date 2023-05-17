@@ -16,6 +16,8 @@ window_height = gui.winfo_screenheight()
 the_canvas = Canvas(gui, width=1000, height=800, background="skyblue")
 the_canvas.pack()
 
+FPS = 60
+
 ########################## YOUR CODE BELOW THIS LINE ##############################
 
 
@@ -88,34 +90,22 @@ def make_sun(a_canvas, center, size=100, my_tag="", primary_color="yellow"):
 
 ####################################################################################
 
-
-# def __my_delete(canvas: Canvas, tag: typing.Union[str, None]):
-#     if tag is None:
-#         return
-
-#     if p1_utilities.does_tag_exist(canvas, tag):
-#         p1_utilities.delete(canvas, tag)
-
-# def __my_get_right(canvas: Canvas, tag: typing.Union[str, None]):
-#     if tag is None:
-#         return
-
-#     if p1_utilities.does_tag_exist(canvas, tag):
-#         p1_utilities.get_right(canvas, tag)
-
-# def __my_get_left(canvas: Canvas, tag: typing.Union[str, None]):
-#     if tag is None:
-#         return
-
-#     if p1_utilities.does_tag_exist(canvas, tag):
-#         p1_utilities.get_left(canvas, tag)
-
-## EVENT HANDLERS HERE ##############################################################
-
-
 hotairballoon_tagset = set()
 car_tagset = set()
 cloud_tagset = set()
+
+
+def __my_delete(canvas: Canvas, tag: str):
+    if tag in ["sun", "road"]:
+        return
+
+    p1_utilities.delete(canvas, tag)
+    for tagset in [hotairballoon_tagset, car_tagset, cloud_tagset]:
+        if tag in tagset:
+            tagset.remove(tag)
+
+
+## EVENT HANDLERS HERE ##############################################################
 
 
 def click_handle(event: Event):
@@ -138,14 +128,14 @@ def click_handle(event: Event):
 
 # delete function: delete [hotairballoon] when double clicked
 
-# def double_click_handle(event):
-#     print(event)
-#     tag = p1_utilities.get_tag_from_event(the_canvas, event)
-#     __my_delete(the_canvas, tag)
+
+def double_click_handle(event):
+    tag = p1_utilities.get_tag_from_event(the_canvas, event)
+    __my_delete(the_canvas, tag)
+
 
 the_canvas.bind("<Button-1>", click_handle)
-
-# the_canvas.bind('<Button-2>', double_click_handle)
+the_canvas.bind("<Button-2>", double_click_handle)
 
 ####################################################################################
 
@@ -155,7 +145,7 @@ the_canvas.bind("<Button-1>", click_handle)
 make_sun(the_canvas, (100, 100), 100, "sun")
 
 # road
-p1_utilities.make_rectangle(the_canvas, (0, 500), 1100, 350, "gray")
+p1_utilities.make_rectangle(the_canvas, (0, 500), 1100, 350, "gray", "road")
 
 # generate 5 cars
 for i in range(5):
@@ -255,8 +245,21 @@ while True:
                 p1_utilities.flip(the_canvas, tag)
                 cloud_tag_direction_mapping[tag] = -cloud_tag_direction_mapping[tag]
 
+        # has a possibility (~1/1s) to generate a new car
+        if random.random() <= (1 / FPS):
+            tmp_tag = random_tag("car")
+            make_landscape_object(
+                the_canvas,
+                (random.randint(0, 10), random.randint(450, 700)),
+                random.randint(80, 120),
+                my_tag=tmp_tag,
+                primary_color=p1_utilities.random_color(),
+            )
+            car_tagset.add(tmp_tag)
+            car_tag_speed_mapping[tmp_tag] = random.randint(2, 10)
+
         gui.update()
-        time.sleep(1 / 60.0)
+        time.sleep(1 / FPS)
 
     except Exception as e:
         print(repr(e))
