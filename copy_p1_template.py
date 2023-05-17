@@ -1,5 +1,8 @@
+import math
 import random
+import string
 import time
+import traceback
 from tkinter import Canvas, Event, Tk
 
 import p1_utilities
@@ -14,6 +17,19 @@ the_canvas = Canvas(gui, width=1000, height=800, background="skyblue")
 the_canvas.pack()
 
 ########################## YOUR CODE BELOW THIS LINE ##############################
+
+
+def random_tag(prefix: str) -> str:
+    return "{}{}".format(
+        prefix,
+        "".join(
+            random.choice(
+                string.ascii_uppercase + string.ascii_lowercase + string.digits
+            )
+            for _ in range(128)
+        ),
+    )
+
 
 ### MAKE CREATURE SECTION (put your function defs here ) ##########################
 
@@ -96,7 +112,10 @@ def make_sun(a_canvas, center, size=100, my_tag="", primary_color="yellow"):
 
 ## EVENT HANDLERS HERE ##############################################################
 
-hotairballoon_counter = 5
+
+hotairballoon_tagset = set()
+car_tagset = set()
+cloud_tagset = set()
 
 
 def click_handle(event: Event):
@@ -105,16 +124,16 @@ def click_handle(event: Event):
     # new_tag = "hotairballoon_" + str(counter)
     # p1_utilities.make_cloud(
     #     the_canvas, (event.x,event.y), fill_color="white", my_tag=new_tag)
+    tag = random_tag("hotairballoon")
     make_creature(
         the_canvas,
         (event.x, event.y),
         p1_utilities.random_color(),
         "orange",
         100,
-        f"hotairballoon_{hotairballoon_counter}",
+        tag,
     )
-    # print(f"hotairballoon_{hotairballoon_counter}")
-    hotairballoon_counter += 1
+    hotairballoon_tagset.add(tag)
 
 
 # delete function: delete [hotairballoon] when double clicked
@@ -140,36 +159,41 @@ p1_utilities.make_rectangle(the_canvas, (0, 500), 1100, 350, "gray")
 
 # generate 5 cars
 for i in range(5):
+    tmp_tag = random_tag("car")
     make_landscape_object(
         the_canvas,
         (random.randint(0, 10), random.randint(450, 700)),
         random.randint(80, 120),
-        f"car_{i}",
+        my_tag=tmp_tag,
         primary_color=p1_utilities.random_color(),
     )
-    # print(f"car_{i}")
+    car_tagset.add(tmp_tag)
 
 # generate 10 clouds
 for i in range(10):
+    tmp_tag = random_tag("cloud")
     p1_utilities.make_cloud(
         the_canvas,
         (random.randint(100, 900), random.randint(0, 300)),
         fill_color="white",
-        my_tag=f"cloud_{i}",
+        my_tag=tmp_tag,
     )
+    cloud_tagset.add(tmp_tag)
 
 # sample code to make a creature:
 
 # generate 5 hotairballoons
 for i in range(5):
+    tmp_tag = random_tag("hotairballoon")
     make_creature(
         the_canvas,
         (random.randint(0, 799), random.randint(0, 300)),
         p1_utilities.random_color(),
         "orange",
         100,
-        f"hotairballoon_{i}",
+        my_tag=tmp_tag,
     )
+    hotairballoon_tagset.add(tmp_tag)
 
 
 ####################################################################################
@@ -177,46 +201,67 @@ for i in range(5):
 ## ANIMATION LOOP HERE ####################################################
 # Note, you will only have ONE animation loop
 
-car_speed_values = [random.randint(2, 10) for _ in range(5)]
-cloud_speed_val = [random.randint(1, 3) for _ in range(10)]
+car_tag_speed_mapping = {tag: random.randint(2, 10) for tag in car_tagset}
 
-cloud_directions = list()
-for _ in range(10):
+cloud_tag_speed_mapping = {tag: random.randint(1, 3) for tag in cloud_tagset}
+cloud_tag_direction_mapping = dict()
+for tag in cloud_tagset:
     if random.random() >= 0.5:
-        cloud_directions.append(1)
+        cloud_tag_direction_mapping[tag] = 1
     else:
-        cloud_directions.append(-1)
+        cloud_tag_direction_mapping[tag] = -1
+
+hotairballoon_angle_mapping = dict()
 
 while True:
 
-    # make every generated hotairballoon "fly up" and change color
-    for i in range(hotairballoon_counter):
-        tmp_tag = f"hotairballoon_{i}"
-        # if not p1_utilities.does_tag_exist(the_canvas, tmp_tag):
-        #     continue
-        p1_utilities.update_position(the_canvas, tmp_tag, x=0, y=-2)
-        # p1_utilities.update_fill(the_canvas, tmp_tag, p1_utilities.random_color())
+    try:
+        # make every generated hotairballoon "fly up" and change color
+        for tmp_tag in hotairballoon_tagset:
+            # if not p1_utilities.does_tag_exist(the_canvas, tmp_tag):
+            #     continue
+            if tmp_tag not in hotairballoon_angle_mapping or random.random() < 0.05:
+                hotairballoon_angle_mapping[tmp_tag] = math.pi * random.random()
+            p1_utilities.update_position(
+                the_canvas,
+                tmp_tag,
+                x=(
+                    2 * random.random() * math.cos(hotairballoon_angle_mapping[tmp_tag])
+                ),
+                y=(
+                    -2
+                    * random.random()
+                    * math.sin(hotairballoon_angle_mapping[tmp_tag])
+                ),
+            )
+            # p1_utilities.update_fill(the_canvas, tmp_tag, p1_utilities.random_color())
 
-    # make every car move different speed
-    for i in range(5):
-        p1_utilities.update_position(the_canvas, f"car_{i}", x=car_speed_values[i])
+        # make every car move different speed
+        for tag in car_tagset:
+            p1_utilities.update_position(the_canvas, tag, x=car_tag_speed_mapping[tag])
 
-    # make cloud move different speed and direction, bounce when hit edge of canvas
-    for i in range(10):
-        tmp_tag = f"cloud_{i}"
-        p1_utilities.update_position(
-            the_canvas, tmp_tag, x=cloud_speed_val[i] * cloud_directions[i]
-        )
-        cloud_right = p1_utilities.get_right(the_canvas, tmp_tag)
-        cloud_left = p1_utilities.get_left(the_canvas, tmp_tag)
+        # make cloud move different speed and direction, bounce when hit edge of canvas
+        for tag in cloud_tagset:
+            p1_utilities.update_position(
+                the_canvas,
+                tag,
+                x=cloud_tag_speed_mapping[tag] * cloud_tag_direction_mapping[tag],
+            )
+            cloud_right = p1_utilities.get_right(the_canvas, tag)
+            cloud_left = p1_utilities.get_left(the_canvas, tag)
 
-        # print(cloud_right, cloud_left)
-        if cloud_right >= 1000 or cloud_left <= 0:
-            p1_utilities.flip(the_canvas, tmp_tag)
-            cloud_directions[i] = -cloud_directions[i]
+            # print(cloud_right, cloud_left)
+            if cloud_right >= 1000 or cloud_left <= 0:
+                p1_utilities.flip(the_canvas, tag)
+                cloud_tag_direction_mapping[tag] = -cloud_tag_direction_mapping[tag]
 
-    gui.update()
-    time.sleep(1 / 60.0)
+        gui.update()
+        time.sleep(1 / 60.0)
+
+    except Exception as e:
+        print(repr(e))
+        print(traceback.format_exc())
+        exit(0)
 
 ########################## YOUR CODE ABOVE THIS LINE ##############################
 
