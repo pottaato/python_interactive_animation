@@ -2,8 +2,7 @@ from tkinter import Canvas, Tk, Event
 import p1_utilities
 import random
 import time
-import typing
-import traceback
+
 gui = Tk()
 gui.title('My Terrarium')
 
@@ -17,28 +16,7 @@ the_canvas.pack()
 
 ### MAKE CREATURE SECTION (put your function defs here ) ##########################
 
-# Here's a delightful smiley face as an example (feel free to delete it)
-# def make_creature(a_canvas, center, primary_color="red", secondary_color="blue", size=100, my_tag=""):
-#     radius = size / 2
-
-#     # just a demo of how you might think about making your creature:
-#     left_eye_pos = (center[0] - radius / 4, center[1] - radius / 5)
-#     right_eye_pos = (center[0] + radius / 4, center[1] - radius / 5)
-#     eye_width = radius / 10
-#     eye_height = radius / 10
-
-#     p1_utilities.make_circle(a_canvas, center, radius,
-#                           fill_color=primary_color, tag=my_tag)
-#     p1_utilities.make_oval(a_canvas, left_eye_pos, eye_width,
-#                         eye_height, fill_color="red", tag=my_tag)
-#     p1_utilities.make_oval(a_canvas, right_eye_pos, eye_width,
-#                         eye_height, fill_color="green", tag=my_tag)
-#     p1_utilities.make_line(a_canvas, [
-#         (center[0] - radius / 2, center[1] + radius / 3),
-#         (center[0], center[1] + radius / 1.2),
-#         (center[0] + radius / 2, center[1] + radius / 3)
-#     ], curvy=True, tag=my_tag)
-
+# hotairbaloon
 def make_creature(a_canvas, center, primary_color="red", secondary_color="blue", size=100, my_tag=""):
     r = size / 2
     x = center[0]
@@ -56,32 +34,34 @@ def make_creature(a_canvas, center, primary_color="red", secondary_color="blue",
 ### MAKE LANDSCAPE OBJECT SECTION (put your function defs here ) ###################
 # Note: if you're going to use shapes that ALSO were part of your creature, no need
 # to copy those function definitions twice!
+
+# car
 def make_landscape_object(a_canvas, center, size=100, my_tag="", primary_color='blue'):
     p1_utilities.make_car(a_canvas, center, fill_color=primary_color, my_tag=my_tag)
 
 ####################################################################################
 
 
-def __my_delete(canvas: Canvas, tag: typing.Union[str, None]):
-    if tag is None:
-        return
+# def __my_delete(canvas: Canvas, tag: typing.Union[str, None]):
+#     if tag is None:
+#         return
 
-    if p1_utilities.does_tag_exist(canvas, tag):
-        p1_utilities.delete(canvas, tag)
+#     if p1_utilities.does_tag_exist(canvas, tag):
+#         p1_utilities.delete(canvas, tag)
 
-def __my_get_right(canvas: Canvas, tag: typing.Union[str, None]):
-    if tag is None:
-        return
+# def __my_get_right(canvas: Canvas, tag: typing.Union[str, None]):
+#     if tag is None:
+#         return
 
-    if p1_utilities.does_tag_exist(canvas, tag):
-        p1_utilities.get_right(canvas, tag)
+#     if p1_utilities.does_tag_exist(canvas, tag):
+#         p1_utilities.get_right(canvas, tag)
 
-def __my_get_left(canvas: Canvas, tag: typing.Union[str, None]):
-    if tag is None:
-        return
+# def __my_get_left(canvas: Canvas, tag: typing.Union[str, None]):
+#     if tag is None:
+#         return
 
-    if p1_utilities.does_tag_exist(canvas, tag):
-        p1_utilities.get_left(canvas, tag)
+#     if p1_utilities.does_tag_exist(canvas, tag):
+#         p1_utilities.get_left(canvas, tag)
 
 ## EVENT HANDLERS HERE ##############################################################
 
@@ -100,22 +80,27 @@ def click_handle(event: Event):
         100, 
         f"hotairballoon_{hotairballoon_counter}"
     )
-    print(f"hotairballoon_{hotairballoon_counter}")
+    # print(f"hotairballoon_{hotairballoon_counter}")
     hotairballoon_counter += 1
 
-def double_click_handle(event):
-    print(event)
-    tag = p1_utilities.get_tag_from_event(the_canvas, event)
-    __my_delete(the_canvas, tag)
+
+# delete function: delete [hotairballoon] when double clicked
+
+# def double_click_handle(event):
+#     print(event)
+#     tag = p1_utilities.get_tag_from_event(the_canvas, event)
+#     __my_delete(the_canvas, tag)
 
 the_canvas.bind('<Button-1>', click_handle)
-the_canvas.bind('<Button-2>', double_click_handle)
+
+# the_canvas.bind('<Button-2>', double_click_handle)
 
 ####################################################################################
 
 
 ## Initial Terarium Setup Here ####################################################
 
+# road
 p1_utilities.make_rectangle(
     the_canvas,
     (0, 500),
@@ -123,6 +108,7 @@ p1_utilities.make_rectangle(
     350,
     "gray")
 
+# generate 5 cars
 for i in range(5):
     make_landscape_object(
         the_canvas,
@@ -133,6 +119,7 @@ for i in range(5):
     )
     # print(f"car_{i}")
 
+# generate 10 clouds
 for i in range(10):
     p1_utilities.make_cloud(
         the_canvas, 
@@ -141,6 +128,8 @@ for i in range(10):
         my_tag=f"cloud_{i}")
 
 # sample code to make a creature:
+
+# generate 5 hotairballoons
 for i in range(5):
     make_creature(
         the_canvas, 
@@ -166,32 +155,33 @@ for _ in range(10):
         cloud_directions.append(-1)
 
 while True:
-    try:
-        for i in range(hotairballoon_counter):
-            tmp_tag = f"hotairballoon_{i}"
-            if not p1_utilities.does_tag_exist(the_canvas, tmp_tag):
-                continue
-            p1_utilities.update_position(the_canvas, tmp_tag, x=0, y=-2)
-        for i in range(5):
-            p1_utilities.update_position(the_canvas, f"car_{i}", x=car_speed_values[i])
-        for i in range(10):
-            tmp_tag = f"cloud_{i}"
-            p1_utilities.update_position(the_canvas, tmp_tag, x=(cloud_speed_val[i] * cloud_directions[i]))
-            try:
-                curr_cloud_right = __my_get_right(the_canvas, tmp_tag)
-                curr_cloud_left = __my_get_left(the_canvas, tmp_tag)
-                if curr_cloud_right >= 1000 or curr_cloud_left <= 0:
-                    p1_utilities.flip(the_canvas, tmp_tag)
-                    cloud_directions[i] = -cloud_directions[i]
-            except TypeError as e:
-                pass
+
+    # make every generated hotairballoon "fly up"
+    for i in range(hotairballoon_counter):
+        tmp_tag = f"hotairballoon_{i}"
+        # if not p1_utilities.does_tag_exist(the_canvas, tmp_tag):
+        #     continue
+        p1_utilities.update_position(the_canvas, tmp_tag, x=0, y=-2)
+    
+    # make every car move different speed
+    for i in range(5):
+        p1_utilities.update_position(the_canvas, f"car_{i}", x=car_speed_values[i])
+
+    # make cloud move different speed and direction, bounce when hit edge of canvas
+    for i in range(10):
+        tmp_tag = f"cloud_{i}"
+        p1_utilities.update_position(the_canvas, tmp_tag, x=cloud_speed_val[i] * cloud_directions[i])
+        cloud_right = p1_utilities.get_right(the_canvas, tmp_tag)
+        cloud_left = p1_utilities.get_left(the_canvas, tmp_tag)
+
+        print(cloud_right, cloud_left)
+        if cloud_right >= 1000 or cloud_left <= 0:
+            p1_utilities.flip(the_canvas, tmp_tag)
+            cloud_directions[i] = -cloud_directions[i]
+
 
         gui.update()
         time.sleep(1 / 60.0)
-    except Exception as e:
-        print(traceback.format_exc())
-        exit(0)
-
 
 ########################## YOUR CODE ABOVE THIS LINE ##############################
 
