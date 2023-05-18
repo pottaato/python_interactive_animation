@@ -76,7 +76,7 @@ def make_creature(
         p1_utilities.make_rectangle(
             a_canvas,
             (x - r + 10, y + 2 * r),
-            80,
+            2 * r - 20,
             r,
             fill_color=secondary_color,
             tag=my_tag,
@@ -152,7 +152,7 @@ def click_handle(event: Event):
         (event.x, event.y),
         p1_utilities.random_color(),
         "orange",
-        100,
+        random.randint(80, 110),
         tag,
     )
     hotairballoon_tagset.add(tag)
@@ -214,7 +214,7 @@ for i in range(5):
         (random.randint(0, 799), random.randint(0, 300)),
         p1_utilities.random_color(),
         "orange",
-        100,
+        random.randint(80, 110),
         my_tag=tmp_tag,
     )
     hotairballoon_tagset.add(tmp_tag)
