@@ -256,10 +256,15 @@ while True:
 
         # make cloud move different speed and direction, bounce when hit edge of canvas
         for tag in cloud_tagset:
+            delta_y = 0.0
+            if random.random() < (10 / FPS):
+                delta_y = (random.random() - 0.5) * 2
+
             p1_utilities.update_position(
                 the_canvas,
                 tag,
                 x=cloud_tag_speed_mapping[tag] * cloud_tag_direction_mapping[tag],
+                y=delta_y,
             )
 
             cloud_right = p1_utilities.get_right(the_canvas, tag)
