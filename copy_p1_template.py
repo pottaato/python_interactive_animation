@@ -37,37 +37,58 @@ def random_tag(prefix: str) -> str:
 
 # hotairbaloon
 def make_creature(
-    a_canvas, center, primary_color="red", secondary_color="blue", size=100, my_tag=""
+    a_canvas,
+    center,
+    primary_color="red",
+    secondary_color="blue",
+    size=100,
+    my_tag="",
+    shape="hotairbaloon",
 ):
-    r = size / 2
-    x = center[0]
-    y = center[1]
+    if shape == "hotairbaloon":
+        r = size / 2
+        x = center[0]
+        y = center[1]
 
-    p1_utilities.make_circle(a_canvas, center, r, fill_color=primary_color, tag=my_tag)
-    p1_utilities.make_line(
-        a_canvas,
-        [(x - r + 5, y + 15), (x + r - 5, y + 15)],
-        curvy=False,
-        fill_color="black",
-        tag=my_tag,
-    )
-    p1_utilities.make_line(
-        a_canvas,
-        [(x - r + 5, y + 15), (x - r + 10, y + 2 * r)],
-        curvy=False,
-        fill_color="black",
-        tag=my_tag,
-    )
-    p1_utilities.make_line(
-        a_canvas,
-        [(x + r - 5, y + 15), (x + r - 10, y + 2 * r)],
-        curvy=False,
-        fill_color="black",
-        tag=my_tag,
-    )
-    p1_utilities.make_rectangle(
-        a_canvas, (x - r + 10, y + 2 * r), 80, r, fill_color=secondary_color, tag=my_tag
-    )
+        p1_utilities.make_circle(
+            a_canvas, center, r, fill_color=primary_color, tag=my_tag
+        )
+        p1_utilities.make_line(
+            a_canvas,
+            [(x - r + 5, y + 15), (x + r - 5, y + 15)],
+            curvy=False,
+            fill_color="black",
+            tag=my_tag,
+        )
+        p1_utilities.make_line(
+            a_canvas,
+            [(x - r + 5, y + 15), (x - r + 10, y + 2 * r)],
+            curvy=False,
+            fill_color="black",
+            tag=my_tag,
+        )
+        p1_utilities.make_line(
+            a_canvas,
+            [(x + r - 5, y + 15), (x + r - 10, y + 2 * r)],
+            curvy=False,
+            fill_color="black",
+            tag=my_tag,
+        )
+        p1_utilities.make_rectangle(
+            a_canvas,
+            (x - r + 10, y + 2 * r),
+            80,
+            r,
+            fill_color=secondary_color,
+            tag=my_tag,
+        )
+    elif shape == "cloud":
+        p1_utilities.make_cloud(
+            a_canvas,
+            center,
+            fill_color="white",
+            my_tag=my_tag,
+        )
 
 
 ####################################################################################
@@ -77,15 +98,32 @@ def make_creature(
 # Note: if you're going to use shapes that ALSO were part of your creature, no need
 # to copy those function definitions twice!
 
-# car
-def make_landscape_object(a_canvas, center, size=100, my_tag="", primary_color="blue"):
-    p1_utilities.make_car(a_canvas, center, fill_color=primary_color, my_tag=my_tag)
-
 
 def make_sun(a_canvas, center, size=100, my_tag="", primary_color="yellow"):
     p1_utilities.make_poly_circle(
         a_canvas, center, size, fill_color="yellow", tag=my_tag
     )
+
+
+def make_landscape_object(
+    a_canvas,
+    center,
+    size=100,
+    my_tag="",
+    primary_color="blue",
+    shape="car",
+    height=None,
+):
+    if shape == "car":
+        # car
+        p1_utilities.make_car(a_canvas, center, fill_color=primary_color, my_tag=my_tag)
+    elif shape == "sun":
+        make_sun(a_canvas, center, size, "sun")
+    elif shape == "road":
+        # road
+        p1_utilities.make_rectangle(a_canvas, center, size, height, "gray", "road")
+    elif shape == "sidewalk":
+        p1_utilities.make_rectangle(a_canvas, center, size, height, "white", "sidewalk")
 
 
 ####################################################################################
@@ -96,7 +134,7 @@ cloud_tagset = set()
 
 
 def __my_delete(canvas: Canvas, tag: str):
-    if tag in ["sun", "road"]:
+    if tag in ["sun", "road", "sidewalk"]:
         return
 
     p1_utilities.delete(canvas, tag)
@@ -137,10 +175,9 @@ the_canvas.bind("<Button-2>", double_click_handle)
 
 ## Initial Terarium Setup Here ####################################################
 
-make_sun(the_canvas, (100, 100), 100, "sun")
-
-# road
-p1_utilities.make_rectangle(the_canvas, (0, 500), 1100, 350, "gray", "road")
+make_landscape_object(the_canvas, (100, 100), 101, shape="sun")
+make_landscape_object(the_canvas, (0, 500), 1100, height=350, shape="road")
+make_landscape_object(the_canvas, (0, 450), 1100, height=50, shape="sidewalk")
 
 # generate 5 cars
 for i in range(5):
@@ -157,15 +194,13 @@ for i in range(5):
 # generate 10 clouds
 for i in range(10):
     tmp_tag = random_tag("cloud")
-    p1_utilities.make_cloud(
+    make_creature(
         the_canvas,
-        (random.randint(100, 900), random.randint(0, 300)),
-        fill_color="white",
+        center=(random.randint(100, 900), random.randint(0, 300)),
         my_tag=tmp_tag,
+        shape="cloud",
     )
     cloud_tagset.add(tmp_tag)
-
-# sample code to make a creature:
 
 # generate 5 hotairballoons
 for i in range(5):
@@ -202,27 +237,18 @@ while True:
 
     try:
         # make every generated hotairballoon "fly up" and change color
-        for tmp_tag in hotairballoon_tagset:
-            # if not p1_utilities.does_tag_exist(the_canvas, tmp_tag):
-            #     continue
-            if tmp_tag not in hotairballoon_angle_mapping or random.random() < 0.05:
-                hotairballoon_angle_mapping[tmp_tag] = math.pi * random.random()
+        for tag in hotairballoon_tagset:
+            if tag not in hotairballoon_angle_mapping or random.random() < 0.05:
+                hotairballoon_angle_mapping[tag] = math.pi * random.random()
+
             p1_utilities.update_position(
                 the_canvas,
-                tmp_tag,
-                x=(
-                    2 * random.random() * math.cos(hotairballoon_angle_mapping[tmp_tag])
-                ),
-                y=(
-                    -2
-                    * random.random()
-                    * math.sin(hotairballoon_angle_mapping[tmp_tag])
-                ),
+                tag,
+                x=(2 * random.random() * math.cos(hotairballoon_angle_mapping[tag])),
+                y=(-2 * random.random() * math.sin(hotairballoon_angle_mapping[tag])),
             )
             if random.random() < (2 / FPS):
-                p1_utilities.update_fill(
-                    the_canvas, tmp_tag, p1_utilities.random_color()
-                )
+                p1_utilities.update_fill(the_canvas, tag, p1_utilities.random_color())
 
         # make every car move different speed
         for tag in car_tagset:
@@ -235,10 +261,9 @@ while True:
                 tag,
                 x=cloud_tag_speed_mapping[tag] * cloud_tag_direction_mapping[tag],
             )
+
             cloud_right = p1_utilities.get_right(the_canvas, tag)
             cloud_left = p1_utilities.get_left(the_canvas, tag)
-
-            # print(cloud_right, cloud_left)
             if cloud_right >= 1000 or cloud_left <= 0:
                 p1_utilities.flip(the_canvas, tag)
                 cloud_tag_direction_mapping[tag] = -cloud_tag_direction_mapping[tag]
