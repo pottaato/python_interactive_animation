@@ -2,7 +2,6 @@ import math
 import random
 import string
 import time
-import traceback
 from tkinter import Canvas, Event, Tk
 
 import p1_utilities
@@ -290,8 +289,6 @@ while True:
         time.sleep(1 / FPS)
 
     except Exception as e:
-        print(repr(e))
-        print(traceback.format_exc())
         exit(0)
 
 ########################## YOUR CODE ABOVE THIS LINE ##############################
