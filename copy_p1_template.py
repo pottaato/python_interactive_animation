@@ -302,7 +302,7 @@ while True:
         gui.update()
         time.sleep(1 / FPS)
 
-    except Exception as e:
+    except Exception as _:
         exit(0)
 
 ########################## YOUR CODE ABOVE THIS LINE ##############################
