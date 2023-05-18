@@ -182,13 +182,14 @@ the_canvas.bind("<Button-2>", double_click_handle)
 make_landscape_object(the_canvas, (100, 100), 101, shape="sun")
 make_landscape_object(the_canvas, (0, 500), 1100, height=350, shape="road")
 make_landscape_object(the_canvas, (0, 450), 1100, height=50, shape="sidewalk")
+make_landscape_object(the_canvas, (0, 740), 1100, height=40, shape="sidewalk")
 
 # generate 5 cars
 for i in range(5):
     tmp_tag = random_tag("car")
     make_landscape_object(
         the_canvas,
-        (random.randint(0, 10), random.randint(450, 700)),
+        (random.randint(0, 10), random.randint(450, 640)),
         random.randint(80, 120),
         my_tag=tmp_tag,
         primary_color=p1_utilities.random_color(),
@@ -288,7 +289,7 @@ while True:
             tmp_tag = random_tag("car")
             make_landscape_object(
                 the_canvas,
-                (random.randint(0, 10), random.randint(450, 700)),
+                (0, random.randint(450, 640)),
                 random.randint(80, 120),
                 my_tag=tmp_tag,
                 primary_color=p1_utilities.random_color(),
