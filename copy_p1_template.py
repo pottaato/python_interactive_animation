@@ -110,7 +110,7 @@ def make_landscape_object(
     size=100,
     my_tag="",
     primary_color="blue",
-    shape="car",
+    shape="sun",
     height=None,
 ):
     if shape == "car":
@@ -193,6 +193,7 @@ for i in range(5):
         random.randint(80, 120),
         my_tag=tmp_tag,
         primary_color=p1_utilities.random_color(),
+        shape="car",
     )
     car_tagset.add(tmp_tag)
 
@@ -293,6 +294,7 @@ while True:
                 random.randint(80, 120),
                 my_tag=tmp_tag,
                 primary_color=p1_utilities.random_color(),
+                shape="car",
             )
             car_tagset.add(tmp_tag)
             car_tag_speed_mapping[tmp_tag] = random.randint(2, 10)
