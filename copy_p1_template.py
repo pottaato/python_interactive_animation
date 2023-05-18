@@ -50,7 +50,7 @@ def make_creature(
         y = center[1]
 
         p1_utilities.make_circle(
-            a_canvas, center, r, fill_color=primary_color, tag=my_tag
+            a_canvas, center, r, fill_color=primary_color, tag=f"{my_tag}_circle"
         )
         p1_utilities.make_line(
             a_canvas,
@@ -98,7 +98,7 @@ def make_creature(
 # to copy those function definitions twice!
 
 
-def make_sun(a_canvas, center, size=100, my_tag="", primary_color="yellow"):
+def make_sun(a_canvas, center, size=100, my_tag=""):
     p1_utilities.make_poly_circle(
         a_canvas, center, size, fill_color="yellow", tag=my_tag
     )
@@ -164,6 +164,11 @@ def click_handle(event: Event):
 def double_click_handle(event):
     tag = p1_utilities.get_tag_from_event(the_canvas, event)
     __my_delete(the_canvas, tag)
+    if tag[: len("hotairballoon")] == "hotairballoon":
+        if tag[-len("_circle") :] == "_circle":
+            __my_delete(the_canvas, tag.replace("_circle", ""))
+        else:
+            __my_delete(the_canvas, tag + "_circle")
 
 
 the_canvas.bind("<Button-1>", click_handle)
@@ -240,14 +245,20 @@ while True:
             if tag not in hotairballoon_angle_mapping or random.random() < 0.05:
                 hotairballoon_angle_mapping[tag] = math.pi * random.random()
 
-            p1_utilities.update_position(
-                the_canvas,
-                tag,
-                x=(2 * random.random() * math.cos(hotairballoon_angle_mapping[tag])),
-                y=(-2 * random.random() * math.sin(hotairballoon_angle_mapping[tag])),
-            )
+            delta_x = 2 * random.random() * math.cos(hotairballoon_angle_mapping[tag])
+            delta_y = -2 * random.random() * math.sin(hotairballoon_angle_mapping[tag])
+
+            for t in [tag, f"{tag}_circle"]:
+                p1_utilities.update_position(
+                    the_canvas,
+                    t,
+                    x=delta_x,
+                    y=delta_y,
+                )
             if random.random() < (2 / FPS):
-                p1_utilities.update_fill(the_canvas, tag, p1_utilities.random_color())
+                p1_utilities.update_fill(
+                    the_canvas, f"{tag}_circle", p1_utilities.random_color()
+                )
 
         # make every car move different speed
         for tag in car_tagset:
